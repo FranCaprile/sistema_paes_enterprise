@@ -1,0 +1,9 @@
+Modelo,C._Lectora,Ciencias,Historia,M2,Matemática
+AdaBoost,74.58,99.41,99.45,97.21,95.06
+Bagging,75.66,99.57,88.44,99.04,87.35
+Gradient Boosting,74.48,95.15,90.61,110.72,93.61
+MLP (Neural Net),80.72,100.16,88.52,96.79,92.80
+Random Forest,75.66,98.92,87.47,99.01,86.77
+Regresión Bayesiana,71.08,99.98,87.08,93.63,84.71
+Regresión Lineal,73.21,105.53,94.99,103.82,90.65
+Ridge,71.27,100.10,88.58,92.84,84.62
