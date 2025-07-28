@@ -1,0 +1,43 @@
+paths:
+  paes: 
+    - "data/unprocessed/A_INSCRITOS_PUNTAJES_2023_PAES_PUB_MRUN.csv"
+    - "data/unprocessed/A_INSCRITOS_PUNTAJES_PAES_2024_PUB_MRUN.csv"
+    - "data/unprocessed/A_INSCRITOS_PUNTAJES_PAES_2025_PUB_MRUN.csv"
+
+    # Añadir más archivos de PAES en el futuro como:
+    # - "../data/unprocessed/A_INSCRITOS_PUNTAJES_PAES_2026_PUB_MRUN.csv"
+  sepa: "data/unprocessed/df_pruebas_sepa.csv"
+  indicadores: "data/processed/df_indicadores.csv"
+  bloom: "../data/processed/df_taxonomia.csv"
+  dificultad: "../data/processed/df_avg_diff_scores_agg.csv"
+
+models: "models"  # Carpeta donde se guardarán modelos entrenados
+logs: "logs"  # Carpeta para logs
+
+database:
+  sepa_uri: "postgresql://neondb_owner:npg_7Q3PpglUrMTF@ep-late-mouse-ac4gdoqk-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+  db_tables:
+    - student
+    - answer
+    - question
+    - assessment
+    - question_dimensions_values
+    - dimension_values
+    #gregar más si es necesario
+    
+features:
+  target: "puntaje"  # Variable objetivo (ajusta según tu tabla)
+  drop_columns: ["id", "created_at"]  # Columnas a eliminar antes de entrenar
+  test_size: 0.2  # Proporción del set de test
+  random_state: 42  # Semilla para reproducibilidad
+
+model:
+  type: "RandomForestRegressor"
+  params:
+    n_estimators: 300
+    max_depth: 12
+    random_state: 42
+
+logging:
+  level: "INFO"
+
