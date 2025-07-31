@@ -23,6 +23,8 @@ database:
     - assessment
     - question_dimensions_values
     - dimension_values
+
+    #Tablas para  'df_pruebas_sepa':
     #gregar más si es necesario
     
 features:
