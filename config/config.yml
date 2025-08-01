@@ -1,15 +1,14 @@
 paths:
-  paes: 
-    - "data/unprocessed/A_INSCRITOS_PUNTAJES_2023_PAES_PUB_MRUN.csv"
-    - "data/unprocessed/A_INSCRITOS_PUNTAJES_PAES_2024_PUB_MRUN.csv"
-    - "data/unprocessed/A_INSCRITOS_PUNTAJES_PAES_2025_PUB_MRUN.csv"
+  paes_encrypted_xlsx: "data/unprocessed/paes_encrypted.xlsx"
 
-    # Añadir más archivos de PAES en el futuro como:
-    # - "../data/unprocessed/A_INSCRITOS_PUNTAJES_PAES_2026_PUB_MRUN.csv"
-  sepa: "data/unprocessed/df_pruebas_sepa.csv"
-  indicadores: "data/processed/df_indicadores.csv"
-  bloom: "../data/processed/df_taxonomia.csv"
-  dificultad: "../data/processed/df_avg_diff_scores_agg.csv"
+
+output_paths:
+  df_pruebas_sepa: "data/processed/df_pruebas_sepa.csv"
+  df_indicadores:   "data/processed/df_indicadores.csv"
+  df_taxonomia:     "data/processed/df_taxonomia.csv"
+  df_pca:  "data/processed/df_pca.csv"
+  df_avg_diff:      "data/processed/df_avg_diff_scores.csv"
+  df_avg_diff_agg:  "data/processed/df_avg_diff_scores_agg.csv"
 
 models: "models"  # Carpeta donde se guardarán modelos entrenados
 logs: "logs"  # Carpeta para logs
@@ -17,16 +16,286 @@ logs: "logs"  # Carpeta para logs
 database:
   sepa_uri: "postgresql://neondb_owner:npg_7Q3PpglUrMTF@ep-late-mouse-ac4gdoqk-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
   db_tables:
-    - student
-    - answer
+   # - student
+   # - answer
     - question
-    - assessment
-    - question_dimensions_values
-    - dimension_values
+   # - assessment
+   # - question_dimensions_values
+   # - dimension_values
 
     #Tablas para  'df_pruebas_sepa':
+  db_queries:
+    average_scores: |
+      SELECT 
+        s.id AS student_id,
+        s.fullname AS student_name,
+        s.rut AS student_rut,
+        ass.name AS test_type,
+        ROUND(AVG(a.score), 2) AS average_score
+      FROM answer a
+      JOIN student s ON s.id = a.student_id
+      JOIN question q ON q.id = a.question_id
+      JOIN assessment ass ON ass.id = q.assessment_id
+      GROUP BY s.id, ass.name
+      ORDER BY s.id, ass.name;
+    indicator: |
+      SELECT * FROM indicator;
+    answer: |
+      SELECT score, question_id, student_id FROM answer;
+    student: |
+      SELECT id, rut FROM student;
+    average_diff_scores: |
+      SELECT 
+          s.id AS student_id,
+          s.fullname AS student_name,
+          s.rut AS student_rut,
+          ass.name AS test_type,
+          q.id AS question_id,
+          a.score AS score,
+          dv.value AS dimension_value,
+          dv.dimension_id AS dimension_type
+      FROM answer a
+      JOIN student s ON s.id = a.student_id
+      JOIN question q ON q.id = a.question_id
+      JOIN assessment ass ON ass.id = q.assessment_id
+      JOIN question_dimensions_values qdv ON qdv.question_id = q.id
+      JOIN dimension_values dv ON dv.id = qdv.dimension_value_id
+      WHERE dv.dimension_id = 4;
+
     #gregar más si es necesario
     
+taxonomia:
+  Conocer:
+    - Adquirir
+    - Anotar
+    - Citar
+    - Decir
+    - Definir
+    - Detallar
+    - Distinguir
+    - Enlistar
+    - Enumerar
+    - Enunciar
+    - Escribir
+    - Exhibir
+    - Exponer
+    - Expresar
+    - Identificar
+    - Indicar
+    - Marcar
+    - Membretar
+    - Nombrar
+    - Mostrar
+    - Narrar
+    - Reconocer
+    - Recordar
+    - Referir
+    - Registrar
+    - Relatar
+    - Repetir
+    - Señalar
+    - Subrayar
+  Comprender:
+    - Argumentar
+    - Cambiar
+    - Codificar
+    - Completar
+    - Comprender
+    - Concretar
+    - Convertir
+    - "Decir (con sus palabras)"
+    - Decodificar
+    - "Definir (con sus palabras)"
+    - Demostrar
+    - Derivar
+    - Describir
+    - Determinar
+    - Diferenciar
+    - Distinguir
+    - Ejemplificar
+    - Establecer
+    - Estimar
+    - Explicar
+    - Exponer
+    - Extender
+    - Extrapolar
+    - Formular
+    - Generalizar
+    - Identificar
+    - Inducir
+    - Inferir
+    - Interpolar
+    - Leer
+    - Narrar
+    - Opinar
+    - Organizar
+    - Parafrasear
+    - Predecir
+    - Redefinir
+    - Redisponer
+    - Relacionar
+    - Reorganizar
+    - Representar
+    - Rescribir
+    - Resumir
+    - Traducir
+    - Transformar
+  Aplicar:
+    - Actuar
+    - Aplicar
+    - Aprovechar
+    - Clasificar
+    - Computar
+    - Decir
+    - Demostrar
+    - Discriminar
+    - Dramatizar
+    - Elegir
+    - Emplear
+    - Enlazar
+    - Explicar
+    - Exponer
+    - Generalizar
+    - Ilustrar
+    - Localizar
+    - Interpretar
+    - Manejar
+    - Mostrar
+    - Operar
+    - Practicar
+    - Producir
+    - Representar
+    - Resolver
+    - Seleccionar
+    - Transferir
+    - Trazar
+    - Usar
+    - Utilizar
+  Analizar:
+    - Abstraer
+    - Aislar
+    - Analizar
+    - Clasificar
+    - Comparar
+    - Contrastar
+    - Decidir
+    - Deducir
+    - Derivar
+    - Desarmar
+    - Descomponer
+    - Describir
+    - Descubrir
+    - Desglosar
+    - Detallar
+    - Detectar
+    - Diferenciar
+    - Discriminar
+    - Distinguir
+    - Dividir
+    - Especificar
+    - Examinar
+    - Fraccionar
+    - Identificar
+    - Localizar
+    - Omitir
+    - Relacionar
+    - Seccionar
+    - Seleccionar
+  Evaluar:
+    - Argumentar
+    - Categorizar
+    - Clasificar
+    - Comparar
+    - Comprobar
+    - Conceptuar
+    - Concluir
+    - Considerar
+    - Constatar
+    - Contrastar
+    - Criticar
+    - Decidir
+    - Demostrar
+    - Determinar
+    - Elegir
+    - Escoger
+    - Establecer
+    - Estandarizar
+    - Estimar
+    - Estudiar
+    - Evaluar
+    - Fundamentar
+    - Justificar
+    - Justipreciar
+    - Juzgar
+    - Medir
+    - Observar
+    - Opinar
+    - Predecir
+    - Precisar
+    - Probar
+    - Reconocer
+    - Revisar
+    - Seleccionar
+    - Sustentar
+    - Trazar
+    - Verificar
+    - Valorar
+  Crear:
+    - Agrupar
+    - Clasificar
+    - Combinar
+    - Componer
+    - Compilar
+    - Concebir
+    - Confeccionar
+    - Construir
+    - Crear
+    - Descubrir
+    - Diseñar
+    - Distribuir
+    - Ejecutar
+    - Elaborar
+    - Ensamblar
+    - Esquematizar
+    - Especificar
+    - Establecer
+    - Estructurar
+    - Explicar
+    - Exponer
+    - Expresar
+    - Formar
+    - Formular
+    - Fundar
+    - Generar
+    - Idear
+    - Implantar
+    - Improvisar
+    - Instituir
+    - Instaurar
+    - Inventar
+    - Inventariar
+    - Investigar
+    - Modificar
+    - Narrar
+    - Organizar
+    - Originar
+    - Planear
+    - Producir
+    - Programar
+    - Proponer
+    - Proyectar
+    - Reconstruir
+    - Reacomodar
+    - Relatar
+    - Relacionar
+    - Realizar
+    - Reorganizar
+    - Reparar
+    - Simplificar
+    - Transmitir
+    - Variar
+
+
 features:
   target: "puntaje"  # Variable objetivo (ajusta según tu tabla)
   drop_columns: ["id", "created_at"]  # Columnas a eliminar antes de entrenar
