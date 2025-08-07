@@ -1,6 +1,11 @@
 paths:
   paes_encrypted_xlsx: "data/unprocessed/paes_encrypted.xlsx"
-
+  # Directorio donde se guardan los reportes de métricas y gráficos
+  reports_dir:           "reports"
+  # Directorio donde se guardan los modelos serializados
+  ml_models_dir:         "ml_models"
+  # Parquet intermedio (dataset final preprocesado antes de entrenar)
+  intermediate_parquet:  "data/processed/full_dataset.parquet"
 
 output_paths:
   df_pruebas_sepa: "data/processed/df_pruebas_sepa.csv"
@@ -10,11 +15,46 @@ output_paths:
   df_avg_diff:      "data/processed/df_avg_diff_scores.csv"
   df_avg_diff_agg:  "data/processed/df_avg_diff_scores_agg.csv"
 
-models: "models"  # Carpeta donde se guardarán modelos entrenados
-logs: "logs"  # Carpeta para logs
+# ── Parámetros de entrenamiento
+training:
+  test_size:     0.2      # Proporción para test/train split
+  random_state:  42       # Semilla para reproducibilidad
+
+modelos:
+  - LinearRegression
+  - Ridge
+  - BayesianRidge
+  - RandomForest
+  - GradientBoosting
+  - MLPRegressor
+  - Lasso
+  - SVR
+
+# ── Definición de pruebas (targets dinámicos en cada preparador)
+pruebas:
+  #- "Matemática"
+  - "C. Lectora"
+  #- "Ciencias"
+  #- "Historia"
+
+# ── Conjuntos de variables disponibles para cada experimento
+variables:
+  #- bloom
+  - indicadores
+  #- sepa
+  #- pca
+  #- dificultad
+
+conjuntos_variables:
+  bloom: df_taxonomia
+  indicadores: df_indicadores
+  dificultad: df_pruebas_sepa
+  pca: df_pca
+  avg_scores: df_avg_scores_agg
+  avd_scores: df_avd_scores
 
 database:
-  sepa_uri: "postgresql://neondb_owner:npg_7Q3PpglUrMTF@ep-late-mouse-ac4gdoqk-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+  sepa_uri: "postgresql://neondb_owner:npg_CDqOMepr8B0u@ep-dry-mountain-actscmz6-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
   db_tables:
    # - student
    # - answer
