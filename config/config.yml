@@ -4,8 +4,7 @@ paths:
   reports_dir:           "reports"
   # Directorio donde se guardan los modelos serializados
   ml_models_dir:         "ml_models"
-  # Parquet intermedio (dataset final preprocesado antes de entrenar)
-  intermediate_parquet:  "data/processed/full_dataset.parquet"
+
 
 output_paths:
   df_pruebas_sepa: "data/processed/df_pruebas_sepa.csv"
@@ -32,33 +31,33 @@ modelos:
 
 # ── Definición de pruebas (targets dinámicos en cada preparador)
 pruebas:
-  #- "Matemática"
+  - "Matemática"
   - "C. Lectora"
-  #- "Ciencias"
-  #- "Historia"
+  - "Ciencias"
+  - "Historia"
 
 # ── Conjuntos de variables disponibles para cada experimento
 variables:
-  #- bloom
+  - bloom
   - indicadores
-  #- sepa
-  #- pca
-  #- dificultad
+  - sepa
+  - pca
+  - dificultad
 
 conjuntos_variables:
   bloom: df_taxonomia
   indicadores: df_indicadores
   dificultad: df_pruebas_sepa
   pca: df_pca
-  avg_scores: df_avg_scores_agg
-  avd_scores: df_avd_scores
+  avg_scores_agg: df_avg_scores_agg
+  avg_scores: df_avg_scores
 
 database:
   sepa_uri: "postgresql://neondb_owner:npg_CDqOMepr8B0u@ep-dry-mountain-actscmz6-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
-  db_tables:
+  #db_tables:
    # - student
    # - answer
-    - question
+   # - question
    # - assessment
    # - question_dimensions_values
    # - dimension_values

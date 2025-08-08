@@ -14,12 +14,6 @@ PREPARERS = {
     "dificultad":  dataset_dificultad,
 }
 
-def _normalize_rut(df: pd.DataFrame) -> pd.DataFrame:
-    if 'RUT' in df.columns:
-        return df.rename(columns={'RUT': 'student_rut'})
-    if 'rut' in df.columns:
-        return df.rename(columns={'rut': 'student_rut'})
-    return df
 
 def preparar_dataset(dfs: Dict[str, pd.DataFrame], prueba: str, variable: str):
     """

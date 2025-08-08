@@ -219,9 +219,6 @@ def transformar_avg_diff_scores(df: pd.DataFrame, fillna_value=0.0) -> pd.DataFr
 
     # 1. Copia y revisión rápida
     df_local = df.copy()
-    print(f"[INFO] transformando_avg_diff_scores: {len(df_local)} filas recibidas")
-    print("Valores únicos de test_type (muestra):", df_local['test_type'].dropna().unique()[:10])
-    print("Valores únicos de dimension_value (muestra):", df_local['dimension_value'].dropna().unique()[:10])
 
     # 2. Extraer tipo y año
     df_local['type_flag'] = df_local['test_type'].astype(str).str.contains('Len', case=False).astype(int)
@@ -238,10 +235,6 @@ def transformar_avg_diff_scores(df: pd.DataFrame, fillna_value=0.0) -> pd.DataFr
         .reset_index()
     )
 
-    if df_avg.empty:
-        print("[WARN] Después del groupby, df_avg está vacío.")
-        return pd.DataFrame(columns=['id', 'rut'])
-
     # 4. Construir la columna combinada y pivotear
     df_avg['type_dimension'] = df_avg['type'].astype(str) + ' - ' + df_avg['dimension_value'].astype(str)
 
@@ -255,5 +248,58 @@ def transformar_avg_diff_scores(df: pd.DataFrame, fillna_value=0.0) -> pd.DataFr
     df_pivot = df_pivot.rename(columns={'student_rut': 'rut', 'student_id': 'id'})
     df_pivot = df_pivot.fillna(fillna_value)
 
-    print(f"[INFO] Resultado de pivot tiene {df_pivot.shape[0]} filas y {df_pivot.shape[1]} columnas")
+    return df_pivot
+
+import pandas as pd
+
+def transformar_avg_diff_scores_agg(df: pd.DataFrame, fillna_value=0.0) -> pd.DataFrame:
+    """
+    Versión agregada por tipo de prueba (Len=1, otras=0), sin separar por año.
+    Devuelve un pivot del promedio de score por alumno y (type - dimension_value).
+    """
+    required = ['student_id', 'student_rut', 'test_type', 'score', 'dimension_value']
+    faltantes = [c for c in required if c not in df.columns]
+    if faltantes:
+        raise KeyError(f"Faltan columnas requeridas: {faltantes}")
+
+    if df.empty:
+        # Fallback consistente con la otra función
+        return pd.DataFrame(columns=['id', 'rut'])
+
+    # Copia de trabajo
+    df_local = df.copy()
+
+    # 1) Tipo de prueba: 1 si contiene 'Len' (case-insensitive), 0 en caso contrario
+    df_local['type'] = df_local['test_type'].astype(str).str.contains('len', case=False, na=False).astype(int)
+
+    # 2) Agrupar: promedio por alumno, dimensión y tipo
+    df_avg = (
+        df_local
+        .groupby(['student_id', 'student_rut', 'dimension_value', 'type'], dropna=False)
+        .agg({'score': 'mean'})
+        .reset_index()
+    )
+
+    if df_avg.empty:
+        return pd.DataFrame(columns=['id', 'rut'])
+
+    # 3) Columna combinada "type - dimension_value" para pivot
+    df_avg['type'] = df_avg['type'].astype(str) + ' - ' + df_avg['dimension_value'].astype(str)
+
+    # 4) Pivotear a ancho e hidratar NaN
+    df_pivot = (
+        df_avg.pivot_table(
+            index=['student_id', 'student_rut'],
+            columns='type',
+            values='score'
+        )
+        .reset_index()
+        .rename(columns={'student_rut': 'rut', 'student_id': 'id'})
+        .fillna(fillna_value)
+    )
+
+    # Ordenar columnas dejando id, rut primero
+    cols = ['id', 'rut'] + [c for c in df_pivot.columns if c not in ('id', 'rut')]
+    df_pivot = df_pivot[cols]
+
     return df_pivot

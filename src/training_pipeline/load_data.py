@@ -21,9 +21,17 @@ def cargar_dataset(ruta: str, tipo: str = 'csv'):
     else:
         raise ValueError(f"Tipo de archivo {tipo} no soportado")
 
+
 def normalize_rut(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Renombra columnas RUT, rut o student_id a student_rut para merges.
+    Elimina columnas duplicadas resultantes.
+    """
     mapping = {}
-    if 'RUT' in df.columns:      mapping['RUT'] = 'student_rut'
-    if 'rut' in df.columns:      mapping['rut'] = 'student_rut'
-    if 'student_id' in df.columns: mapping['student_id'] = 'student_rut'
-    return df.rename(columns=mapping) if mapping else df
+    if 'RUT' in df.columns:
+        mapping['RUT'] = 'student_rut'
+    if 'rut' in df.columns:
+        mapping['rut'] = 'student_rut'
+    if mapping:
+        df = df.rename(columns=mapping)
+    return df

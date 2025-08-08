@@ -20,9 +20,27 @@ def dataset_indicadores(dfs: Dict[str, pd.DataFrame], target_col: str):
     df_paes = _normalize_rut(dfs['df_paes'])
     df_ind  = _normalize_rut(dfs['df_indicadores'])
 
-    # 2) Merge SEPA + PAES + Indicadores
-    df = df_sepa.merge(df_paes, on='student_rut', how='inner') \
-                .merge(df_ind,  on='student_rut', how='inner')
+    df_ind  = df_ind.fillna(0)
+
+    # ——— Unificar tipo de student_rut en todos los DataFrames ———
+    df_sepa['student_rut'] = df_sepa['student_rut'].astype(str)
+    df_paes['student_rut'] = df_paes['student_rut'].astype(str)
+    df_ind ['student_rut'] = df_ind ['student_rut'].astype(str)
+
+    # — Eliminar duplicados de columnas si los hubiera ———
+    df_sepa = df_sepa.loc[:, ~df_sepa.columns.duplicated()]
+    df_paes = df_paes.loc[:, ~df_paes.columns.duplicated()]
+    df_ind  = df_ind .loc[:, ~df_ind .columns.duplicated()]
+
+
+    # 2) Merge SEPA + PAES + Indicadores SIN conflicto de columnas
+    #    Ahora df_sepa y df_paes tienen student_rut, pero df_ind NO.
+    df = (
+        df_sepa
+        .merge(df_paes, on='student_rut', how='inner')
+        .merge(df_ind,  on='student_rut', how='inner')
+    )
+
 
     # 3) Reemplazar '-' por NaN y castear las columnas de score
     df.replace('-', np.nan, inplace=True)

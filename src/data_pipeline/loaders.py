@@ -43,22 +43,8 @@ def cargar_datos_brutos():
     else:
         resultados["paes_encrypted"] = None
     resultados["paes"] = []
-
-
-    # 2) Cargar datos de la SEPA
     engine = crear_engine()
-    resultados["db_tables"] = {}
-    for tbl in cfg["database"].get("db_tables", []):
-        try:
-            # Lee toda la tabla
-            df_tbl = pd.read_sql(text(f"SELECT * FROM public.{tbl}"), con=engine)
-            print(f"[OK] Tabla {tbl}: {len(df_tbl)} filas")
-            resultados["db_tables"][tbl] = df_tbl
-        except Exception as e:
-            print(f"[ERROR] Tabla {tbl}: {e}")
-            traceback.print_exc()           # <-- Para ver el detalle del error
-            resultados["db_tables"][tbl] = None
-    
+
     resultados["db_queries"] = {}
     for name, query in cfg["database"].get("db_queries", {}).items():
         try:
@@ -84,3 +70,19 @@ if __name__ == "__main__":
     for name, df in data["db_queries"].items():
         print(f"  Query {name}: {len(df) if df is not None else 'ERROR'} rows")
 
+
+"""""
+    # 2) Cargar datos de la SEPA
+    engine = crear_engine()
+    resultados["db_tables"] = {}
+    for tbl in cfg["database"].get("db_tables", []):
+        try:
+            # Lee toda la tabla
+            df_tbl = pd.read_sql(text(f"SELECT * FROM public.{tbl}"), con=engine)
+            print(f"[OK] Tabla {tbl}: {len(df_tbl)} filas")
+            resultados["db_tables"][tbl] = df_tbl
+        except Exception as e:
+            print(f"[ERROR] Tabla {tbl}: {e}")
+            traceback.print_exc()           # <-- Para ver el detalle del error
+            resultados["db_tables"][tbl] = None
+"""""
