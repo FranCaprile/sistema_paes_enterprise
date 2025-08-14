@@ -11,22 +11,7 @@ Proyecto para la construcción de un **pipeline de datos**, **entrenamiento** y 
 ---
 
 ## 📂 Arquitectura del proyecto
-
-
-├── config.yml
-├── data/
-│ ├── processed/ # CSVs generados por data_pipeline
-│ └── unprocessed/ # paes_encrypted.xlsx (origen)
-├── ml_models/ # <dd-mm>stacking_allvars<prueba>.joblib
-├── reports/
-│ ├── metrics.csv # métricas en formato ancho (RMSE)
-│ └── feature_importances/ # importancias del stacking (CSV + PNG)
-└── src/
-├── data_pipeline/ # loaders, transformaciones, run_pipeline.py
-├── training_pipeline/ # datasets, stacking, métricas, run_pipeline.py
-└── prediction_service/ # predictor.py y test_predictor.py
-
-
+ (A completar)
 
 ---
 
