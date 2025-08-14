@@ -55,11 +55,11 @@ El flujo es:
 
 ### 1️⃣ Instalación de dependencias
 
-```bash
+```bash 
 python3 -m venv .venv
 source .venv/bin/activate     # En Windows: .venv\Scripts\activate
 pip install -r requirements.txt
-```bash
+```
 
 
 ### 2️⃣ Ejecutar Data Pipeline 
@@ -69,6 +69,7 @@ Genera y/o actualiza los datos, se ejecuta con el siguiente comando en el termin
 
 ```bash
 python3 src/data_pipeline/run_pipeline.py
+```
 
 ### 3️⃣ Ejecutar Training Pipeline
 
@@ -77,14 +78,15 @@ Entrena modelo Stacking por prueba, guarda modelos y métricas:
 
 ```bash
 python3 src/training_pipeline/run_pipeline.py
+```
 
 Salida esperada:
 
-Modelos: ml_models/<dd-mm>_stacking_allvars_<prueba>.joblib
+- Modelos: ml_models/<dd-mm>_stacking_allvars_<prueba>.joblib
 
-Métricas: reports/metrics.csv
+- Métricas: reports/metrics.csv
 
-Importancias del stacking: reports/feature_importances/*
+- Importancias del stacking: reports/feature_importances/*
 
 ### 4️⃣ Predicción por RUT
 
@@ -92,37 +94,36 @@ Predice PAES por RUT usando el último modelo de Stacking disponible:
 
 ```bash
 python src/prediction_service/test_predictor.py *rut_codificado*
+```
 
-Ejemplo:
+*Ejemplo:*
 ```bash
 python src/prediction_service/test_predictor.py 425047515d575059
-
+```
 
 También, la predicción del rut se puede llamar como función:
 
 ```bash
 from prediction_service.predictor import predecir_paes_por_rut
 preds = predecir_paes_por_rut("12345678K")  # {'C. Lectora': 625.3, 'Matemática': 601.2, ...}
+```
 
 ### Información importante:
 
-SEPA: Los datos se obtienen de un servidor NEON (credenciales en config.yml → sepa_uri).
+**SEPA**: Los datos se obtienen de un servidor NEON (credenciales en config.yml → sepa_uri).
 
-PAES: Los archivos fuente están en data/unprocessed.
+**PAES**: Los archivos fuente están en data/unprocessed.
 
-Procesamiento: Ambos conjuntos se limpian y transforman para generar data/processed, base del entrenamiento.
+**Procesamiento**: Ambos conjuntos se limpian y transforman para generar data/processed, base del entrenamiento.
 
-Codificación RUT: Los RUTs están codificados; la función de decodificación está en src/prediction_service/predictor.py.
+**Codificación RUT**: Los RUTs están codificados; la función de decodificación está en src/prediction_service/predictor.py.
 
-Llave de unión: student_rut (sin puntos ni guiones).
+**Llave de unión**: student_rut (sin puntos ni guiones).
 
-Métricas: reports/metrics.csv en formato ancho (fila = (Modelo, Variable), columnas = pruebas (RMSE)).
+**Ejecución**: Siempre correr desde la raíz del repositorio.
 
-Ejecución: Siempre correr desde la raíz del repositorio.
 
-Estructura Python: src/__init__.py y __init__.py en submódulos recomendados.
-
-Licencia
+### Licencia
 
 Uso académico / práctica MLOps.
 
