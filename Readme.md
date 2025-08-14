@@ -59,6 +59,7 @@ El flujo es:
 python3 -m venv .venv
 source .venv/bin/activate     # En Windows: .venv\Scripts\activate
 pip install -r requirements.txt
+```bash
 
 
 ### 2️⃣ Ejecutar Data Pipeline 
