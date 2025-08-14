@@ -1,8 +1,19 @@
-pandas
-numpy
-scikit-learn
-SQLAlchemy
-psycopg2-binary
-matplotlib
-seaborn
-python-dotenv
+# --- Core scientific stack (Python 3.8-compatible pins) ---
+numpy==1.26.4
+pandas==2.0.3
+scipy==1.10.1
+scikit-learn==1.3.2
+joblib==1.3.2
+
+# --- Viz ---
+matplotlib==3.7.3
+
+# --- IO / Config ---
+PyYAML==6.0.1     # para leer config.yml
+openpyxl==3.1.2   # para leer .xlsx con pandas
+python-dotenv==1.0.1  # opcional, si se usa .env
+
+# --- DB / SQL ---
+SQLAlchemy==2.0.29
+psycopg2-binary==2.9.9
+

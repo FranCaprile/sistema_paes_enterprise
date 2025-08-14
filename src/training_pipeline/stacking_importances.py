@@ -1,4 +1,3 @@
-# src/training_pipeline/stacking_importance.py
 from __future__ import annotations
 
 from pathlib import Path
@@ -18,7 +17,6 @@ def _unwrap_estimator(est):
     if Pipeline is not None and isinstance(est, Pipeline):
         if "est" in est.named_steps:
             return est.named_steps["est"]
-        # último paso como fallback
         return list(est.named_steps.values())[-1]
     return est
 
@@ -31,7 +29,7 @@ def _feature_importances_for_base(est, n_features: int) -> np.ndarray:
     Si no existe, devuelve ceros.
     """
     est_u = _unwrap_estimator(est)
-    if hasattr(est_u, "feature_importances_") and est_u.feature_importances_ is not None:
+    if hasattr(est_u, "feature_importance_") and est_u.feature_importances_ is not None:
         imp = np.asarray(est_u.feature_importances_, dtype=float)
         if imp.shape[0] != n_features:
             imp = np.pad(imp, (0, max(0, n_features - imp.shape[0])))[:n_features]
@@ -123,11 +121,11 @@ def save_stacking_importances(
 
     importances = stacked_feature_importance(stack_model, feature_names)
 
-    fi_dir = Path(reports_dir) / "feature_importances"
+    fi_dir = Path(reports_dir) / "feature_importance"
     fi_dir.mkdir(parents=True, exist_ok=True)
 
     slug_prueba = _slug(prueba)
-    csv_path = fi_dir / f"{prefix}_{slug_prueba}_importances.csv"
+    csv_path = fi_dir / f"{prefix}_{slug_prueba}_importance.csv"
     png_path = fi_dir / f"{prefix}_{slug_prueba}_top{min(top_k, len(feature_names))}.png"
 
     # CSV completo

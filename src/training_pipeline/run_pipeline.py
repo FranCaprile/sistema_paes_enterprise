@@ -1,4 +1,3 @@
-# src/training_pipeline/run_pipeline.py
 import sys
 from pathlib import Path
 import joblib
