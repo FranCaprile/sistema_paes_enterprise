@@ -1,0 +1,129 @@
+feature,importance
+0 - Mediano,0.05878280590951505
+mat_7,0.041333747370363404
+Inferir el propósito comunicativo de un texto no literario.,0.037976248635063936
+mat_1,0.03505997600635829
+mat_3,0.034749718022259485
+mat_11,0.02594046335234632
+mat_12,0.02594046335234606
+mat_2,0.023081142873498346
+mat_9,0.02225835409986647
+Identificar información explícita (hechos) en textos no literarios.,0.01931518741402606
+Atribuir el propósito comunicativo de un texto no literario.,0.018752451491626253
+Reconocer el destinatario en textos no literarios.,0.018285498917023583
+Distinguir el tema central de diversos textos.,0.01791525054793163
+mat_5,0.01791505439776097
+Inferir relaciones que permiten comprender el sentido global del texto.,0.01766268089702537
+"Inferir relaciones de finalidad, causa y consecuencia o efecto en narraciones.",0.016936389761177686
+mat_10,0.016610318916832262
+"Inferir el significado de palabras no familiares a partir del contexto, en diversos textos.",0.0162463181540944
+mat_8,0.01607161660052927
+Distinguir la idea principal de diversos textos.,0.014409660822497034
+Identificar acontecimientos en narraciones.,0.013455223099589781
+"Relacionar información (finalidades, causas y consecuencias o efectos) en textos no literarios.",0.013215575738356614
+Reconocer un conector que puede reemplazar a otro equivalente sin modificar el sentido del texto.,0.012504256395394382
+leng_10,0.012383738437461019
+Identificar hechos en textos no literarios.,0.011966480243534099
+* Atribuir el propósito comunicativo de textos no literarios.,0.011570297930688292
+student_id,0.011438105564761802
+0 - Fácil,0.01096833197426327
+0 - Difícil,0.010898018199536591
+Identificar informaciones en textos no literarios.,0.010435753750782178
+mat_6,0.010337878981596087
+Identificar datos de un texto relacionando información explícita.,0.010330063979227344
+PC3,0.010132534667568173
+Inferir el significado de palabras a partir de claves contextuales.,0.010051088395019824
+Conocer,0.010002194610815219
+Resolver un problema que requiere multiplicar un número natural por un número decimal positivo.,0.00988759185633775
+Reconocer la función de un pronombre en diversos textos.,0.009734513415531457
+Reconocer la función de adjetivos en diversos textos.,0.009361433901370862
+Relacionar ideas relevantes a partir de información explícita en diversos textos.,0.009302516442724562
+Aplicar,0.009046370398326764
+Inferir características de personajes principales en narraciones.,0.009028178062630223
+mat_4,0.008750601322803933
+Reconocer al emisor en textos no literarios.,0.00866162249853177
+Inferir relaciones que permiten comprender el sentido global de diversos textos.,0.0085869217486667
+* Distinguir el tema central de diversos textos.,0.008563233717229238
+PC4,0.008535774911091759
+1 - Fácil,0.008533575805240312
+Distinguir el tema central de un texto literario.,0.008529510268899063
+Reconocer tipos de textos literarios.,0.008108011277275014
+Inferir características de personajes en narraciones.,0.007699544255802069
+Analizar,0.007569189922304479
+* Distinguir el tema central de diversos textos o de parte de estos.,0.007071492135872455
+Reconocer la función de ilustraciones en textos no literarios.,0.007069234841681689
+Distinguir el sentimiento que predomina en un poema.,0.0068207670340785275
+Reemplazar conectores según la función que cumplen.,0.006622222107569732
+Inferir la moraleja de una fábula.,0.006590455328651491
+Atribuir el propósito comunicativo de textos no literarios.,0.006576554457211958
+leng_2,0.006512683766169723
+Reconocer la función de un conector en diversos textos.,0.006219798684941067
+Crear,0.006105940138614076
+leng_4,0.005935163962983726
+Inferir el significado de palabras no familiares a partir del contexto en diversos textos.,0.005772038358238713
+Interpretar información a partir de datos presentados en un gráfico de barra simple.,0.005732630444936942
+Distinguir la idea principal de párrafos de diversos textos.,0.005640722757297247
+leng_3,0.005258482383337465
+Identificar el orden de los acontecimientos en narraciones.,0.005220505220284738
+"Reconocer un conector que puede reemplazar a otro, sin cambiar el sentido del texto.",0.005113143645256419
+* Relacionar ideas que permiten comprender el sentido global de diversos textos.,0.005022248770573275
+Reconocer la función de un verbo regular (modo Indicativo) en diversos textos.,0.004977390267569257
+PC6,0.004910676817201659
+Reconocer la función de sustantivos en diversos textos.,0.004781489667692339
+"Inferir el significado de palabras a partir del contexto, en diversos textos.",0.004773520024526177
+Comprender,0.004744428709909262
+"Reconocer la función de ilustraciones, símbolos y pictogramas en textos no literarios.",0.00471748473921917
+1 - Mediano,0.0043007276363611945
+leng_8,0.004276379635792852
+leng_11,0.0042673891880090405
+leng_12,0.004267389188008929
+Inferir información (hechos) en textos no literarios.,0.0041247388024602495
+Reconocer tipos de textos no literarios.,0.003968349978956389
+leng_1,0.003705568962089151
+1 - Difícil,0.0035904408213051258
+PC7,0.0035866849956841577
+leng_6,0.0024637684480770536
+leng_5,0.0021885678051404888
+Inferir función de conectores en una oración.,0.0021309860082199586
+Evaluar,0.002114364858595641
+Reconocer la función de algunos elementos de las obras dramáticas (acotaciones).,0.002092874850540243
+PC1,0.0019249360019255272
+leng_9,0.001895267846986166
+PC8,0.0018245727130935044
+leng_7,0.0017582444572963628
+* Inferir relaciones que permiten comprender el sentido global de diversos textos.,0.0013806419889289033
+Distinguir el tema central de diversos textos o de parte de estos.,0.0013184035607175305
+PC5,0.0013010526275374996
+PC2,0.0011448604542195467
+Identificar información explícita en un texto literario.,0.000959471857350576
+Identificar información explícita (datos) en textos no literarios.,0.0008900926265947356
+Reconocer diversos tipos de textos.,0.0008650071416668367
+Inferir actitudes de los personajes en narraciones.,0.0006386639651218948
+* Identificar el orden de los acontecimientos en narraciones.,1.2203452304678975e-16
+Interpretar lenguaje figurado en un texto no literario.,1.0021685650284178e-16
+"* Inferir el significado de palabras no familiares a partir del contexto, en diversos textos.",9.840133437024783e-17
+* Distinguir la idea principal de párrafos de diversos textos.,7.981451598181388e-17
+Distinguir el tema central en un texto no literario.,7.311345885655269e-17
+Establecer relaciones de correferencia textual.,7.026706494700703e-17
+"Identificar información como datos, hechos e ideas relevantes en diversos textos.",6.638768809063297e-17
+Identificar las formas básicas propias del discurso expositivo.,5.107668718838074e-17
+* Inferir características de personajes en narraciones.,4.088387344287063e-17
+* Reconocer tipos de textos no literarios.,3.457993582773057e-17
+Identificar el par de figuras ubicadas en una cuadrícula que se relacionan mediante una transformación isométrica (traslación).,2.9208985217679507e-17
+"Inferir el significado de expresiones a partir del contexto, en diversos textos.",2.79329675478052e-17
+* Reconocer tipos de textos literarios.,2.7421202724810058e-17
+"* Identificar información explícita (datos, hechos, personas, lugares, tiempos e ideas) en textos no literarios.",2.6039772241458136e-17
+Inferir relaciones de causa y consecuencia en textos no literarios.,2.231589623323585e-17
+Identificar información explícita de un texto.,2.1932251666772662e-17
+Interpretar lenguaje figurado en un texto literario.,1.7947382906027504e-17
+Operar con información presentada en un pictograma sin escala.,1.5130325220929382e-17
+Distinguir el tema central en un texto literario.,1.4248745859568707e-17
+Inferir información del texto relacionando ideas explícitas.,7.193617047675135e-18
+Interpretar lenguaje figurado simple en poemas.,3.630083403900956e-18
+"* Inferir información (datos, hechos, personas, lugares, tiempos e ideas) en textos no literarios.",1.2700725877995457e-18
+Relacionar secuencia de pasos en textos instructivos.,1.0286458442857195e-29
+"Resolver un problema que requiere calcular la probabilidad de un evento, usando el modelo de Laplace.",8.53474319197701e-30
+Relacionar características del espacio narrativo con la acción y los personajes.,4.209181354833594e-30
+Resolver un problema que requiere plantear y determinar la solución de un sistema de dos ecuaciones de primer grado con dos incógnitas.,2.823843539748982e-30
+Resolver un problema que requiere plantear y encontrar la solución de una ecuación de primer grado con una incógnita.,6.415533888622949e-31
+0 - Pendiente,4.156063318553743e-31

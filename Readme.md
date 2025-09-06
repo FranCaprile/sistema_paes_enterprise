@@ -11,7 +11,7 @@ Proyecto para la construcción de un **pipeline de datos**, **entrenamiento** y 
 ---
 
 ## 📂 Arquitectura del proyecto
- (A completar)
+![Tablas SEPA en Neon — dimension_values](assets/neon-dimension-values.png)
 
 ---
 
@@ -25,7 +25,7 @@ El flujo es:
    - Estos archivos procesados se usan posteriormente para el entrenamiento del modelo.
 
 2. **Training Pipeline**  
-   - Entrena 8 modelos base (definidos en `training_pipeline/models.py`) y evalúa métricas guardadas en `reports/metrics.csv`.
+   - Entrena 8 modelos base (definidos en `training_pipeline/models.py`) y evalúa métricas guardadas en `reports/performance_metrics/metrics.csv`.
    - Entrena un modelo **Stacking** que combina algunos de los modelos entrenados anteriormente y combina todas las variables (**All Vars**).
    - Guarda:
      - Modelo Stacking entrenado en `ml_models/`
@@ -78,19 +78,19 @@ Salida esperada:
 Predice PAES por RUT usando el último modelo de Stacking disponible:
 
 ```bash
-python src/prediction_service/test_predictor.py *rut_codificado*
+python src/prediction_service/test_predictor.py *RUT*
 ```
 
 *Ejemplo:*
 ```bash
-python src/prediction_service/test_predictor.py 425047515d575059
+python src/prediction_service/test_predictor.py 21791328
 ```
 
 También, la predicción del rut se puede llamar como función:
 
 ```bash
 from prediction_service.predictor import predecir_paes_por_rut
-preds = predecir_paes_por_rut("12345678K")  # {'C. Lectora': 625.3, 'Matemática': 601.2, ...}
+preds = predecir_paes_por_rut("21791328")  # {'C. Lectora': 625.3, 'Matemática': 601.2, ...}
 ```
 
 ### Información importante:

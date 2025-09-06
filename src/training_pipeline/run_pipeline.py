@@ -191,7 +191,7 @@ def main():
     }
 
     # Orden deseado de columnas (pruebas)
-    order_cols = ["C. Lectora", "Ciencias", "Historia", "Matemática"]
+    order_cols = ["C. Lectora", "Ciencias", "Historia", "Matemática", "M2"]
 
     df_all_w = df_all.copy()
     df_all_w["modelo"] = df_all_w["modelo"].map(pretty_name).fillna(df_all_w["modelo"])
@@ -215,13 +215,13 @@ def main():
         wide = wide.rename(columns={"C. Lectora": "C._Lectora"})
 
     # Redondear
-    for c in ["C._Lectora", "Ciencias", "Historia", "Matemática"]:
+    for c in ["C._Lectora", "Ciencias", "Historia", "Matemática", "M2"]:
         if c in wide.columns:
             wide[c] = wide[c].round(2)
 
     # Ordenar filas y columnas
     wide = wide.sort_values(["Variable", "Modelo"], kind="stable").reset_index(drop=True)
-    cols_final = ["Modelo", "C._Lectora", "Ciencias", "Historia", "Matemática", "Variable"]
+    cols_final = ["Modelo", "C._Lectora", "Ciencias", "Historia", "Matemática", "M2", "Variable"]
     wide = wide[[c for c in cols_final if c in wide.columns]]
 
     # Guardar como ÚNICO archivo de métricas (ancho) llamado 'metrics.csv'

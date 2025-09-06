@@ -1,7 +1,7 @@
 paths:
-  paes_encrypted_xlsx: "data/unprocessed/paes_encrypted.xlsx"
+  paes_encrypted_xlsx: "data/unprocessed/paes_decrypted.xlsx"
   # Directorio donde se guardan los reportes de métricas y gráficos
-  reports_dir:           "reports"
+  reports_dir:           "reports/performance_metrics"
   # Directorio donde se guardan los modelos serializados
   ml_models_dir:         "ml_models"
 
@@ -35,6 +35,7 @@ pruebas:
   - "C. Lectora"
   - "Ciencias"
   - "Historia"
+  - "M2"
 
 # ── Conjuntos de variables disponibles para cada experimento
 variables:
@@ -53,7 +54,7 @@ conjuntos_variables:
   avg_scores: df_avg_scores
 
 database:
-  sepa_uri: "postgresql://neondb_owner:npg_CDqOMepr8B0u@ep-dry-mountain-actscmz6-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
+  sepa_uri: "postgresql://neondb_owner:npg_dT5EoRPbsW2n@ep-dark-pond-acrmse8j-pooler.sa-east-1.aws.neon.tech/neondb?sslmode=require&channel_binding=require"
   #db_tables:
    # - student
    # - answer
@@ -66,23 +67,23 @@ database:
   db_queries:
     average_scores: |
       SELECT 
-        s.id AS student_id,
+        s.id   AS student_id,
         s.fullname AS student_name,
-        s.rut AS student_rut,
+        s.rut  AS student_rut,
         ass.name AS test_type,
         ROUND(AVG(a.score), 2) AS average_score
-      FROM answer a
-      JOIN student s ON s.id = a.student_id
-      JOIN question q ON q.id = a.question_id
-      JOIN assessment ass ON ass.id = q.assessment_id
+      FROM public.answer a
+      JOIN public.student s   ON s.id = a.student_id
+      JOIN public.question q  ON q.id = a.question_id
+      JOIN public.assessment ass ON ass.id = q.assessment_id
       GROUP BY s.id, ass.name
       ORDER BY s.id, ass.name;
     indicator: |
-      SELECT * FROM indicator;
+      SELECT * FROM public.indicator;
     answer: |
-      SELECT score, question_id, student_id FROM answer;
+      SELECT score, question_id, student_id FROM public.answer;
     student: |
-      SELECT id, rut FROM student;
+      SELECT id, rut FROM public.student;
     average_diff_scores: |
       SELECT 
           s.id AS student_id,
@@ -93,13 +94,14 @@ database:
           a.score AS score,
           dv.value AS dimension_value,
           dv.dimension_id AS dimension_type
-      FROM answer a
-      JOIN student s ON s.id = a.student_id
-      JOIN question q ON q.id = a.question_id
-      JOIN assessment ass ON ass.id = q.assessment_id
-      JOIN question_dimensions_values qdv ON qdv.question_id = q.id
-      JOIN dimension_values dv ON dv.id = qdv.dimension_value_id
+      FROM public.answer a
+      JOIN public.student s ON s.id = a.student_id
+      JOIN public.question q ON q.id = a.question_id
+      JOIN public.assessment ass ON ass.id = q.assessment_id
+      JOIN public.question_dimensions_values qdv ON qdv.question_id = q.id
+      JOIN public.dimension_values dv ON dv.id = qdv.dimension_value_id
       WHERE dv.dimension_id = 4;
+ 
 
     #gregar más si es necesario
     

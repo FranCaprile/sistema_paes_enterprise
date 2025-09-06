@@ -3,74 +3,151 @@ import numpy as np
 from sklearn.decomposition import PCA
 
 
-def transformar_df_pruebas_sepa(df_avg: pd.DataFrame, n_recientes: int = 12) -> pd.DataFrame:
+def transformar_df_pruebas_sepa(df_avg: pd.DataFrame, n_recientes: int = 12, verbose: bool = True) -> pd.DataFrame:
     """
-    Toma un DataFrame con columnas:
+    Espera columnas al menos:
       - student_id
-      - student_name
       - student_rut
-      - test_type       (ej. "Competencia Lectora 2023")
-      - average_score   (float)
+      - test_type        (texto: 'Lenguaje', 'Matemática', etc.)
+      - average_score
 
-    Y devuelve un nuevo DataFrame con:
-      - id (student_id)
-      - mat_1 ... mat_n_recientes  (puntajes promedio de Matemáticas, ordenados de más reciente a más antiguo)
-      - leng_1 ... leng_n_recientes (puntajes promedio de Lectura, ordenados de más reciente a más antiguo)
-      - student_rut
+    Opcionales para ordenar en el tiempo (se usan en este orden de preferencia):
+      - created_at / date (convertible a datetime)
+      - year (extraído de test_type si aparece un 4-dígitos)
+      - form_id
+      - assessment_id
+      - secuencia artificial (fallback)
 
-    Rellena con el promedio de cada tipo si hay menos de n_recientes pruebas.
+    Devuelve ancho:
+      student_id, mat_1..mat_n, leng_1..leng_n, student_rut
+      (1 = más reciente).
     """
-    # Trabajamos sobre copia para no mutar df_avg original
+    if df_avg is None or df_avg.empty:
+        raise ValueError("[average_scores] vino vacío.")
+
     df = df_avg.copy()
 
-    # 1) Creamos columnas auxiliares
-    df['type'] = df['test_type'].str.contains('Len', case=False).astype(int)
-    df['year'] = df['test_type'].str.extract(r'(\d{4})').astype(int)
+    # --- normalización mínima ---
+    # asegurar tipo de texto
+    df['test_type'] = df['test_type'].astype(str)
+    # tipo: 1 = Lenguaje/CLectora, 0 = Matemática (ajusta palabras clave según tu base)
+    is_len = df['test_type'].str.contains('len|lect|leng|lector', case=False, na=False)
+    df['type'] = np.where(is_len, 1, 0)
 
-    # 2) Seleccionamos las n_recientes más recientes por estudiante y tipo
-    df_recent = (
-        df
-        .sort_values(['student_id', 'type', 'year'], ascending=[True, True, False])
-        .groupby(['student_id', 'type'], as_index=False)
-        .head(n_recientes)
+    # RUT a string por consistencia
+    if 'student_rut' in df.columns:
+        df['student_rut'] = df['student_rut'].astype(str).str.strip()
+
+    # --- candidate columns for ordering ---
+    order_cols = []
+
+    # 1) fecha
+    for cand in ['created_at', 'date']:
+        if cand in df.columns:
+            try:
+                df[cand] = pd.to_datetime(df[cand], errors='coerce')
+                if df[cand].notna().any():
+                    order_cols.append((cand, 'desc_datetime'))  # más reciente primero
+                    break
+            except Exception:
+                pass
+
+    # 2) año en el texto (si aparece)
+    years = df['test_type'].str.extract(r'(\d{4})', expand=False)
+    df['_year'] = pd.to_numeric(years, errors='coerce')
+    if df['_year'].notna().any():
+        order_cols.append(('_year', 'desc_numeric'))
+
+    # 3) form_id o assessment_id
+    for cand in ['form_id', 'assessment_id']:
+        if cand in df.columns and df[cand].notna().any():
+            df[cand] = pd.to_numeric(df[cand], errors='coerce')
+            if df[cand].notna().any():
+                order_cols.append((cand, 'desc_numeric'))
+                break
+
+    # 4) fallback: secuencia por aparición (más nuevo = mayor índice)
+    # esto garantiza que SIEMPRE tengamos un criterio de orden
+    if not order_cols:
+        df['_seq'] = (
+            df.sort_index()
+              .groupby(['student_id', 'type'])
+              .cumcount()
+        )
+        order_cols.append(('_seq', 'desc_numeric'))
+        if verbose:
+            print("[INFO] No hay año/fecha/form_id; usando secuencia por aparición como orden temporal.")
+
+    # --- construir una clave de orden única (numérica) en sentido 'más reciente primero' ---
+    # si tenemos fecha -> usamos timestamp; si es numérico -> tal cual
+    def _to_numeric_desc(col, kind):
+        if kind == 'desc_datetime':
+            return df[col].astype('int64')  # ns desde epoch; NaT -> NaN pero no deberíamos llegar acá si notna().any()
+        elif kind == 'desc_numeric':
+            return df[col]
+        else:
+            return df[col]
+
+    # combinamos criterios (si hay más de uno)
+    order_key = None
+    for col, kind in order_cols:
+        key_part = _to_numeric_desc(col, kind)
+        order_key = key_part if order_key is None else (order_key * 1e9 + key_part)
+
+    df['_order_key'] = order_key
+
+    # --- consolidar por (student_id, type, _order_key) promediando, por si hay duplicados ---
+    df = (
+        df.groupby(['student_id', 'student_rut', 'type', '_order_key'], as_index=False)
+          .agg(average_score=('average_score', 'mean'))
     )
 
-    # 3) Construcción de las listas de puntajes para cada estudiante
+    # --- tomar n más recientes por alumno/tipo ---
+    df = df.sort_values(['student_id', 'type', '_order_key'], ascending=[True, True, False])
+    df_recent = (
+        df.groupby(['student_id', 'type'], as_index=False, group_keys=False)
+          .head(n_recientes)
+    )
+
+    # --- armar listas por alumno ---
     test_dict = {}
     for _, row in df_recent.iterrows():
-        sid = row['student_id']
-        t   = row['type']
-        score = row['average_score']
-        rut = row['student_rut']
+        sid   = row['student_id']
+        t     = int(row['type'])         # 0 = Mat, 1 = Leng
+        score = float(row['average_score'])
+        rut   = row['student_rut']
 
         if sid not in test_dict:
             test_dict[sid] = {'scores': {0: [], 1: []}, 'rut': rut}
 
         test_dict[sid]['scores'][t].append(score)
 
-    # 4) Rellenar con promedios y formar filas
+    # --- rellenar y construir salida ---
     records = []
     for sid, info in test_dict.items():
         mat_scores = info['scores'][0]
         len_scores = info['scores'][1]
-        avg_mat = round(np.mean(mat_scores), 2) if mat_scores else 0.0
-        avg_len = round(np.mean(len_scores), 2) if len_scores else 0.0
 
-        # Completar hasta n_recientes
-        mat_scores += [avg_mat] * (n_recientes - len(mat_scores))
-        len_scores += [avg_len] * (n_recientes - len(len_scores))
+        avg_mat = round(float(np.mean(mat_scores)), 2) if mat_scores else 0.0
+        avg_len = round(float(np.mean(len_scores)), 2) if len_scores else 0.0
+
+        # completar a n_recientes (ya están de más reciente a más antiguo)
+        mat_scores = mat_scores + [avg_mat] * (n_recientes - len(mat_scores))
+        len_scores = len_scores + [avg_len] * (n_recientes - len(len_scores))
 
         row = [sid] + mat_scores + len_scores + [info['rut']]
         records.append(row)
 
-    # 5) Generar DataFrame final
-    col_mat = [f"mat_{i}" for i in range(1, n_recientes+1)]
-    col_len = [f"leng_{i}" for i in range(1, n_recientes+1)]
+    # columnas
+    col_mat = [f"mat_{i}"  for i in range(1, n_recientes + 1)]
+    col_len = [f"leng_{i}" for i in range(1, n_recientes + 1)]
     columns = ['student_id'] + col_mat + col_len + ['student_rut']
-
     df_final = pd.DataFrame(records, columns=columns)
 
+    # limpieza columnas auxiliares si quedaron en el df original (por si lo devuelves también)
     return df_final
+
+
 
 
 def transformar_df_indicadores(df_indicator: pd.DataFrame, df_answer: pd.DataFrame, df_student: pd.DataFrame, k: int = 50) -> pd.DataFrame:
